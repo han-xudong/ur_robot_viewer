@@ -42,7 +42,7 @@ Then, run the viewer:
 python ur_robot_viewer/viewer.py --robot <your_robot>
 ```
 
-where `<your_robot>` is the type of your UR robot, e.g., `ur3`, `ur5`, or `ur10`.
+where `<your_robot>` is the type of your UR robot, e.g., `ur5e`, or `ur10e`.
 
 Now you will see the 3D visualization of the robot and the plots of joint and TCP data.
 
