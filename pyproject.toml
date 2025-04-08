@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ur_robot_viewer"
+version = "0.1.0"
+description = "UR Robot Viewer"
+authors = [
+    {name = "Xudong Han", email = "12231112@mail.sustech.edu.cn"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "h5py>=3.13.0",
+    "jupyter>=1.1.1",
+    "matplotlib>=3.10.1",
+    "numpy>=2.2.4",
+    "protobuf>=6.30.2",
+    "pycollada>=0.9",
+    "pynput>=1.8.1",
+    "pyyaml>=6.0.2",
+    "pyzmq>=26.3.0",
+    "rerun-sdk>=0.22.1",
+    "scipy>=1.15.2",
+    "trimesh>=4.6.6",
+    "ur_rtde==1.6.0",
+    "urdf_parser_py>=0.0.4",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/han-xudong/ur_robot_viewer"
+"Bug Tracker" = "https://github.com/han-xudong/ur_robot_viewer/issues"
+
+[tool.setuptools]
+packages = ["ur_robot_viewer"]

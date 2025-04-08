@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 
+"""
+This script is to visualize the robot state in rerun.
+Press "CTRL+C" to exit the program.
+"""
+
 import argparse
 import sys
 import time
 import yaml
 import zmq
 import numpy as np
-from rerun_loader_urdf import URDFLogger
-from scipy.spatial.transform import Rotation
-from protobuf import robot_pb2
+from ur_robot_viewer.rerun_loader_urdf import URDFLogger
+from ur_robot_viewer.protobuf import robot_pb2
 from common import (
     log_angle_rot,
     link_to_world_transform,
@@ -28,6 +32,8 @@ from rerun.blueprint import (
 
 class RobotSubscriber:
     def __init__(self, address: str) -> None:
+        """Initialize the ZeroMQ subscriber."""
+        
         self.context = zmq.Context()
         self.subscriber = self.context.socket(zmq.SUB)
         self.subscriber.connect(address)
@@ -80,10 +86,10 @@ class RobotVis:
 
         for i, val in enumerate(tcp_pose):
             rr.log(f"/action_dict/tcp_pose/{i}", rr.Scalar(val))
-            
+
         for i, val in enumerate(tcp_velocity):
             rr.log(f"/action_dict/tcp_velocity/{i}", rr.Scalar(val))
-            
+
         for i, val in enumerate(tcp_force):
             rr.log(f"/action_dict/tcp_force/{i}", rr.Scalar(val))
 
@@ -94,7 +100,7 @@ class RobotVis:
         self,
         entity_to_transform: dict[str, tuple[np.ndarray, np.ndarray]],
     ):
-        with open("../config/address.yaml", "r") as f:
+        with open("config/address.yaml", "r") as f:
             address = yaml.load(f.read(), Loader=yaml.Loader)["robot_state"]
         subscriber = RobotSubscriber(address=address)
 
@@ -110,7 +116,12 @@ class RobotVis:
             tcp_velocity = subscriber.tcp_velocity
             tcp_force = subscriber.tcp_force
             self.log_robot_states(joint_angles, entity_to_transform)
-            self.log_action_dict(tcp_pose=tcp_pose, tcp_velocity=tcp_velocity, tcp_force=tcp_force, joint_velocities=joint_velocities)
+            self.log_action_dict(
+                tcp_pose=tcp_pose,
+                tcp_velocity=tcp_velocity,
+                tcp_force=tcp_force,
+                joint_velocities=joint_velocities,
+            )
 
             count += 1
 
@@ -118,6 +129,7 @@ class RobotVis:
                 print("FPS: %.2f" % (count / (time.time() - start_time)))
                 start_time = time.time()
                 count = 0
+
 
 def blueprint():
 
@@ -128,9 +140,7 @@ def blueprint():
                 Tabs(
                     Vertical(
                         *(
-                            TimeSeriesView(
-                                origin=f"/action_dict/joint_velocity/{i}"
-                            )
+                            TimeSeriesView(origin=f"/action_dict/joint_velocity/{i}")
                             for i in range(6)
                         ),
                         name="joint velocity",
@@ -172,10 +182,10 @@ def rerun_server(
     print("Starting rerun server...")
     rr.init("Robot Interface", spawn=True)
     rr.send_blueprint(blueprint())
-    
+
     urdf_logger = URDFLogger(filepath=robot_urdf)
     urdf_logger.log()
-    
+
     robot_vis = RobotVis()
     robot_vis.run(urdf_logger.entity_to_transform)
 
@@ -200,5 +210,5 @@ if __name__ == "__main__":
         help="Robot type (ur10e, ur5e, etc.)",
     )
     args = parser.parse_args()
-    
+
     main(args.robot)

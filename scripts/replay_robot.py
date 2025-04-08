@@ -8,11 +8,9 @@ import time
 import yaml
 import zmq
 import h5py
-import multiprocessing as mp
-import numpy as np
 import rtde_control
 import rtde_receive
-from protobuf import robot_pb2
+from ur_robot_viewer.protobuf import robot_pb2
 
 
 class RobotPublisher:
