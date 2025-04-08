@@ -1,5 +1,7 @@
 # UR Robot Viewer
 
+[![Python](https://img.shields.io/badge/python-≥3.10-3776AB?style=flat-square)](https://www.python.org) [![Rerun](https://img.shields.io/badge/rerun-0.22.1-black?style=flat-square)](https://rerun.io) [![RTDE](https://img.shields.io/badge/ur__rtde-1.6.0-56A0D3?style=flat-square)](https://gitlab.com/sdurobotics/ur_rtde) [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
+
 ## Introduction
 
 This repository is a viewer for UR robot, visualizing the robot's 3D state and plotting the joint and TCP data.
