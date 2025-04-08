@@ -35,6 +35,8 @@ class RobotSubscriber:
         self.joint_angles = np.zeros(6)
         self.joint_velocities = np.zeros(6)
         self.tcp_pose = np.zeros(6)
+        self.tcp_velocity = np.zeros(6)
+        self.tcp_force = np.zeros(6)
 
     def receive_message(self):
         robot = robot_pb2.Robot()
@@ -43,8 +45,8 @@ class RobotSubscriber:
         self.joint_angles = np.array(robot.joint_angles).flatten()
         self.joint_velocities = np.array(robot.joint_velocities).flatten()
         self.tcp_pose = np.array(robot.tcp_pose).flatten()
-
-        self.color_position = np.array(robot.color_extrinsics).flatten()
+        self.tcp_velocity = np.array(robot.tcp_velocity).flatten()
+        self.tcp_force = np.array(robot.tcp_force).flatten()
 
 
 class RobotVis:
@@ -71,14 +73,22 @@ class RobotVis:
     def log_action_dict(
         self,
         tcp_pose: np.ndarray = np.array([0, 0, 0, 0, 0, 0]),
+        tcp_velocity: np.ndarray = np.array([0, 0, 0, 0, 0, 0]),
+        tcp_force: np.ndarray = np.array([0, 0, 0, 0, 0, 0]),
         joint_velocities: np.ndarray = np.array([0, 0, 0, 0, 0, 0]),
     ):
 
         for i, val in enumerate(tcp_pose):
             rr.log(f"/action_dict/tcp_pose/{i}", rr.Scalar(val))
+            
+        for i, val in enumerate(tcp_velocity):
+            rr.log(f"/action_dict/tcp_velocity/{i}", rr.Scalar(val))
+            
+        for i, val in enumerate(tcp_force):
+            rr.log(f"/action_dict/tcp_force/{i}", rr.Scalar(val))
 
-        for i, vel in enumerate(joint_velocities):
-            rr.log(f"/action_dict/joint_velocity/{i}", rr.Scalar(vel))
+        for i, val in enumerate(joint_velocities):
+            rr.log(f"/action_dict/joint_velocity/{i}", rr.Scalar(val))
 
     def run(
         self,
@@ -97,8 +107,10 @@ class RobotVis:
             joint_angles = subscriber.joint_angles
             joint_velocities = subscriber.joint_velocities
             tcp_pose = subscriber.tcp_pose
+            tcp_velocity = subscriber.tcp_velocity
+            tcp_force = subscriber.tcp_force
             self.log_robot_states(joint_angles, entity_to_transform)
-            self.log_action_dict(tcp_pose=tcp_pose, joint_velocities=joint_velocities)
+            self.log_action_dict(tcp_pose=tcp_pose, tcp_velocity=tcp_velocity, tcp_force=tcp_force, joint_velocities=joint_velocities)
 
             count += 1
 
@@ -129,6 +141,20 @@ def blueprint():
                             for i in range(6)
                         ),
                         name="tcp pose",
+                    ),
+                    Vertical(
+                        *(
+                            TimeSeriesView(origin=f"/action_dict/tcp_velocity/{i}")
+                            for i in range(6)
+                        ),
+                        name="tcp velocity",
+                    ),
+                    Vertical(
+                        *(
+                            TimeSeriesView(origin=f"/action_dict/tcp_force/{i}")
+                            for i in range(6)
+                        ),
+                        name="tcp force",
                     ),
                     active_tab=0,
                 ),
