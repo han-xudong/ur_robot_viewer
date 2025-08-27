@@ -62,8 +62,8 @@ def main(fps: int = 100) -> None:
 
     # Set up the RTDE connection
     with open("config/address.yaml", "r") as f:
-        robot_ip = yaml.load(f.read(), Loader=yaml.Loader)["robot_ip"]
-    rtde_r = rtde_receive.RTDEReceiveInterface(robot_ip)
+        robot_host = yaml.load(f.read(), Loader=yaml.Loader)["robot_host"]
+    rtde_r = rtde_receive.RTDEReceiveInterface(robot_host)
 
     # Initialize the publisher
     robot_publisher = RobotPublisher()

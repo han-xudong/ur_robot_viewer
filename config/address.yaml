@@ -1,2 +1,3 @@
 robot_state: "tcp://localhost:5555"
-robot_ip: "192.168.31.10"
+robot_host: "192.168.31.10"
+magiclaw_host: "192.168.31.39"
