@@ -169,7 +169,7 @@ class PhoneSubscriber:
         print("Phone Subscriber Initialization Done.")
         print("{:-^80}".format(""))
 
-    def subscribeMessage(self) -> Tuple[float, bytes, bytes, int, int, list, list]:
+    def subscribeMessage(self) -> Tuple[float, bytes, bytes, int, int, list, list, list, list]:
         """
         Subscribe the message.
 
@@ -181,6 +181,8 @@ class PhoneSubscriber:
             depth_height (int): The height of the depth image.
             local_pose (list): The local pose of the phone.
             global_pose (list): The global pose of the phone.
+            velocity (list): The velocity of the phone.
+            rotation_rate (list): The rotation rate of the phone.
 
         Raises:
             zmq.ZMQError: If no message is received within the timeout period.
@@ -205,6 +207,8 @@ class PhoneSubscriber:
             phone.depth_height,
             phone.local_pose,
             phone.global_pose,
+            phone.velocity,
+            phone.rotation_rate,
         )
 
     def close(self):

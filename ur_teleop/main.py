@@ -8,7 +8,7 @@ import numpy as np
 import multiprocessing as mp
 from typing import Optional, Tuple
 from multiprocessing import Queue, Event
-from devices.realsense_t265 import T265Tracker
+# from devices.realsense_t265 import T265Tracker
 from devices.magiclaw import MagiClaw
 from devices.ur5e import UR5eController
 from scipy.spatial.transform import Slerp, Rotation as R
@@ -87,49 +87,49 @@ def magiclaw_process(
         magiclaw_subscriber.stop()
 
 
-def t265_process(data_queue: Queue, stop_event: Event, loop_rate=50) -> None:
-    """
-    Process to handle the T265 tracker, retrieving pose data and putting it into a queue.
+# def t265_process(data_queue: Queue, stop_event: Event, loop_rate=50) -> None:
+#     """
+#     Process to handle the T265 tracker, retrieving pose data and putting it into a queue.
 
-    Args:
-        data_queue (Queue): Queue to store the pose data.
-        stop_event (Event): Event to signal stopping the process.
-        loop_rate (int): The rate at which to retrieve pose data (default is 30 Hz).
-    """
+#     Args:
+#         data_queue (Queue): Queue to store the pose data.
+#         stop_event (Event): Event to signal stopping the process.
+#         loop_rate (int): The rate at which to retrieve pose data (default is 30 Hz).
+#     """
 
-    print("Starting T265 tracker process...")
-    # Initialize the T265 tracker
-    t265 = T265Tracker()
+#     print("Starting T265 tracker process...")
+#     # Initialize the T265 tracker
+#     t265 = T265Tracker()
 
-    # Set the loop time based on the loop rate
-    loop_time = 1.0 / loop_rate
+#     # Set the loop time based on the loop rate
+#     loop_time = 1.0 / loop_rate
 
-    try:
-        while not stop_event.is_set():
-            start_time = time.time()
+#     try:
+#         while not stop_event.is_set():
+#             start_time = time.time()
 
-            delta_pos, delta_rot = t265.get_delta_pose()
+#             delta_pos, delta_rot = t265.get_delta_pose()
 
-            # Send the filtered delta pose to the queue
-            data_queue.put((delta_pos.tolist(), delta_rot.as_quat()))
+#             # Send the filtered delta pose to the queue
+#             data_queue.put((delta_pos.tolist(), delta_rot.as_quat()))
 
-            # Sleep to maintain the loop rate
-            elapsed_time = time.time() - start_time
-            if elapsed_time < loop_time:
-                time.sleep(loop_time - elapsed_time)
+#             # Sleep to maintain the loop rate
+#             elapsed_time = time.time() - start_time
+#             if elapsed_time < loop_time:
+#                 time.sleep(loop_time - elapsed_time)
 
-        print("Stopping T265 tracker...")
-        # Stop the T265 tracker when the process is stopped
-        t265.stop()
-    except KeyboardInterrupt:
-        print("Stopping T265 tracker...")
+#         print("Stopping T265 tracker...")
+#         # Stop the T265 tracker when the process is stopped
+#         t265.stop()
+#     except KeyboardInterrupt:
+#         print("Stopping T265 tracker...")
 
-        # Set the stop event to signal other processes to stop
-        if not stop_event.is_set():
-            stop_event.set()
+#         # Set the stop event to signal other processes to stop
+#         if not stop_event.is_set():
+#             stop_event.set()
 
-        # Ensure the T265 tracker is stopped properly
-        t265.stop()
+#         # Ensure the T265 tracker is stopped properly
+#         t265.stop()
 
 
 def ur_control_process(
@@ -231,8 +231,8 @@ def teleoperation(
     if device == "t265":
         print("Using T265 tracker for teleoperation.")
         
-        device_proc = mp.Process(target=t265_process, args=(data_queue, stop_event))
-        device_proc.start()
+        # device_proc = mp.Process(target=t265_process, args=(data_queue, stop_event))
+        # device_proc.start()
     elif device == "magiclaw":
         print("Using MagiClaw for teleoperation.")
         

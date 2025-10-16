@@ -1,1 +1,1 @@
-protoc --proto_path=. --python_out=. magiclaw_msg.proto
+protoc --proto_path=. --python_out=. *.proto
